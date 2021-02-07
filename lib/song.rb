@@ -52,12 +52,16 @@ class Song
    created_song
   end
 
-  def self.new_from_filename(file_name)
-    song = split_filename(file_name)
-    artist = Artist.find_or_create_by_name(song[0])
-    genre = Genre.find_or_create_by_name(song[2])
+  def self.find_by_name(name)
+    @@all.find {|song| song.name == name}
+  end
 
-    new_song = self.new(song[1], artist, genre)
+  def self.find_or_create_by_name(name)
+    if self.find_by_name(name)
+      return self.find_by_name(name)
+    else
+      self.create(name)
+    end
   end
 
   def self.create_from_filename(file_name)
