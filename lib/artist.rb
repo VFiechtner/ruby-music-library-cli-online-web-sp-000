@@ -24,8 +24,14 @@ class Artist
    @@all << self
   end
 
-  def self.create(artist)
-   self.new(artist)
+  def self.create(name)
+   new_artist = self.new(name)
+   new_artist.save
+   new_artist
+  end
+  
+  def songs
+    @songs
   end
 
   def add_song(song)
