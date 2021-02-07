@@ -44,6 +44,8 @@ class Artist
   end
 
   def genres
-    self.songs.collect{|song| song.genre}.uniq
+    array = @songs.select {|song| song.genre !=nil}
+    array1 = array.map {|song| song.genre}
+    array2 = array1.uniq
   end
 end
