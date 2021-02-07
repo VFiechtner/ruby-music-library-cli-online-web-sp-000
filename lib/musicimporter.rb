@@ -7,10 +7,10 @@ class MusicImporter
     @path = path
   end
 
-  def path 
-    @path 
+  def path
+    @path
   end
-  
+
   def files
     array = Dir.entries(@path)
     array = array.grep(/.mp3/)
