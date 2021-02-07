@@ -1,17 +1,14 @@
 module Concerns::Findable
 
-  def find_by_name(object)
-    self.all.detect {|o| o.name == object}
+  def find_by_name(name)
+    self.all.find {|a| a.name == name }
   end
 
-  def find_or_create_by_name(object)
-    found_object = self.all.detect {|o| o.name == object}
-    if found_object
-      found_object
+  def find_or_create_by_name(name)
+    if find_by_name(name)
+      return find_by_name(name)
     else
-      new_object = self.new(object)
-      new_object.save
-      new_object
+      create(name)
     end
   end
 
