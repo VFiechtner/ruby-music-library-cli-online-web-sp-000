@@ -2,7 +2,7 @@ require "pry"
 
 class MusicLibraryController
   attr_accessor :path
-  
+
   def initialize(path="./db/mp3s")
     @path=path
     music=MusicImporter.new(@path)
@@ -48,7 +48,7 @@ class MusicLibraryController
       puts "#{i+1}. #{song.artist.name} - #{song.name} - #{song.genre.name}"
     end
   end
-  
+
   def list_artists
     array=Artist.all.sort_by! {|artist| artist.name}
     array1=array.uniq
@@ -56,7 +56,7 @@ class MusicLibraryController
       puts "#{i+1}. #{artist.name}"
     end
   end
-  
+
   def list_genres
     array=Genre.all.sort_by! {|genre| genre.name}
     array1=array.uniq
@@ -64,7 +64,7 @@ class MusicLibraryController
       puts "#{i+1}. #{genre.name}"
     end
   end
-  
+
   def list_songs_by_artist
       puts "Please enter the name of an artist:"
       name=gets.strip
@@ -76,7 +76,7 @@ class MusicLibraryController
       end
     end
   end
-  
+
   def list_songs_by_genre
       puts "Please enter the name of a genre:"
       name=gets.strip
@@ -88,7 +88,7 @@ class MusicLibraryController
       end
     end
   end
-  
+
   def play_song
      Song.all.sort_by! {|song| song.name}
      puts "Which song number would you like to play?"
