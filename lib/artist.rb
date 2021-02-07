@@ -1,16 +1,15 @@
+require "pry"
+
 class Artist
-  #extend Concerns::Findable
-  #extend Memorable::ClassMethods
-  #include Memorable::InstanceMethods
+  extend Concerns::Findable
 
-  attr_accessor :name, :songs, :artist 
-
+  attr_accessor :name
   @@all = []
 
   def initialize(name)
     @name = name
     @songs = []
-    save
+    self.save
   end
 
   def self.all
