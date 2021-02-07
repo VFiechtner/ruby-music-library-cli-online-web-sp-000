@@ -1,93 +1,108 @@
-require 'pry'
+require "pry"
 
 class MusicLibraryController
-  include Memorable::ClassMethods
-
-  attr_accessor :music
-
-  def initialize(path = "./db/mp3s")
-    @music = MusicImporter.new(path)
-    @music.import
-  end
-
-  def sorter
-    @music.files.sort
+  attr_accessor :path
+  
+  def initialize(path="./db/mp3s")
+    @path=path
+    music=MusicImporter.new(@path)
+    music.import
   end
 
   def call
-    puts "Welcome to Your Music Library!"
-    input = ""
-    @sorted_songs = sorter
-    while input != "exit"
-      puts "What would you like to do?"
-      input = gets.strip
-      case input
-      when "list songs"
-        songs
-      when  "list artists"
-        artists
-      when "list genres"
-        genres
-      when "play song"
-        play_song
-      when "list artist"
-        list_artist
-      when "list genre"
-        list_genre
+    input = nil
+
+    puts "Welcome to your music library!"
+    puts "What would you like to do?"
+    puts "To list all of your songs, enter 'list songs'."
+    puts "To list all of the artists in your library, enter 'list artists'."
+    puts "To list all of the genres in your library, enter 'list genres'."
+    puts "To list all of the songs by a particular artist, enter 'list artist'."
+    puts "To list all of the songs of a particular genre, enter 'list genre'."
+    puts "To play a song, enter 'play song'."
+    puts "To quit, type 'exit'."
+
+    until input == "exit"
+       input = gets.strip
+       if input == "list songs"
+         list_songs
+       elsif input == 'list artists'
+         list_artists
+       elsif input == 'list artist'
+         list_songs_by_artist
+       elsif input == 'list genres'
+         list_genres
+       elsif input == 'list genre'
+         list_songs_by_genre
+       elsif input == 'play song'
+         play_song
+       end
+    end
+  end
+
+
+  def list_songs
+    Song.all.sort_by! {|song| song.name}
+
+    Song.all.each_with_index do |song, i|
+      puts "#{i+1}. #{song.artist.name} - #{song.name} - #{song.genre.name}"
+    end
+  end
+  
+  def list_artists
+    array=Artist.all.sort_by! {|artist| artist.name}
+    array1=array.uniq
+    array1.each_with_index do |artist, i|
+      puts "#{i+1}. #{artist.name}"
+    end
+  end
+  
+  def list_genres
+    array=Genre.all.sort_by! {|genre| genre.name}
+    array1=array.uniq
+    array1.each_with_index do |genre, i|
+      puts "#{i+1}. #{genre.name}"
+    end
+  end
+  
+  def list_songs_by_artist
+      puts "Please enter the name of an artist:"
+      name=gets.strip
+      artist= Artist.find_by_name(name)
+     if artist != nil
+      array = artist.songs.sort_by! {|song| song.name}
+      array.each_with_index do |song, i|
+         puts "#{i+1}. #{song.name} - #{song.genre.name}"
       end
     end
   end
-
-  def songs
-    @sorted_songs.each_with_index do|song, num|
-      puts "#{num+1}. #{song}"
+  
+  def list_songs_by_genre
+      puts "Please enter the name of a genre:"
+      name=gets.strip
+      genre= Genre.find_by_name(name)
+     if genre != nil
+      array = genre.songs.sort_by! {|song| song.name}
+      array.each_with_index do |song, i|
+         puts "#{i+1}. #{song.artist.name} - #{song.name}"
+      end
     end
   end
-
-  def artists
-    Artist.all.each do |artist|
-      puts artist.name
-    end
-  end
-
-  def genres
-    Genre.all.each do |genre|
-      puts genre.name
-    end
-  end
-
+  
   def play_song
-    puts "What song number would you like to play?"
-    song_num = gets.chomp
-    playing_song = @sorted_songs[song_num.to_i - 1]
-    puts "Playing #{playing_song}"
-  end
+     Song.all.sort_by! {|song| song.name}
+     puts "Which song number would you like to play?"
 
-  def list_artist
-    array = @music.files.collect do |file|
-      song = self.class.split_filename(file)
-    end
-    puts "What artist would you like to list songs for?"
-    artist_input = gets.chomp
-    artist = Artist.find_by_name(artist_input)
-    array.each do |song|
-      if song[0] == artist.name
-        puts "#{song[0]} - #{song[1]} - #{song[2]}"
-      end
-    end
-  end
+     if gets.strip.match(/[0-9]/)
+       i= gets.strip.to_i
 
-  def list_genre
-    array = @music.files.collect do |file|
-      song = self.class.split_filename(file)
-    end
-    puts "What genre would you like to list songs for?"
-    genre_input = gets.chomp
-    genre = Genre.find_by_name(genre_input)
-    array.each do |song|
-      if song[2] == genre.name
-        puts "#{song[0]} - #{song[1]} - #{song[2]}"
+       if  (i > 0 and i << Song.all.length)
+          song=Song.all[(i-1)]
+          if song != nil
+          puts "Playing #{song.name} by #{song.artist.name}"
+          end
+        end
       end
-    end
-  end
+   end
+   
 end
