@@ -32,9 +32,16 @@ class Genre
   def songs
     @songs
   end
+
+  def add_song(song)
+    if !(@songs.include? (song))
+      @songs << song
+      song.genre = self
+    end
+  end
   
   def artists
-    self.songs.collect {|song| song.artist}.uniq
+    array = @
   end
 
 end
