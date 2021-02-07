@@ -41,7 +41,9 @@ class Genre
   end
 
   def artists
-    array = @
+    array = @songs.select {|song| song.artist !=nil}
+    array1 = array.map{|song| song.artist}
+    array2 = array1.uniq
   end
 
 end
