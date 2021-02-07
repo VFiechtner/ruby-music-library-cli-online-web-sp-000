@@ -1,15 +1,24 @@
+require "pry"
+
 class MusicImporter
   attr_accessor :path
 
-  def initialize(file_path)
-    @path = file_path
+  def initialize(path)
+    @path = path
   end
 
+  def path 
+    @path 
+  end
+  
   def files
-    @files ||= Dir.entries(@path).select {|song| !File.directory?(song) && song.end_with?(".mp3")}
+    array = Dir.entries(@path)
+    array = array.grep(/.mp3/)
   end
 
   def import
-    files.each {|song| Song.create_from_filename(song)}
+    self.files.each do |filename|
+      Song.create_from_filename(filename)
+    end
   end
 end
